@@ -2,51 +2,44 @@
 
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *         File:  IntCrtl.h
- *       Module:  IntCrtl
+ *         File:  Platform_Types.h
+ *       Module:  -
  *
- *  Description:  header file for IntCrtl Module    
+ *  Description:  Contains types that dependent on platform - CortexM4     
  *  
  *********************************************************************************************************************/
-#ifndef IntCrtl_H
-#define IntCrtl_H
+#ifndef PLATFORM_TYPES_H
+#define PLATFORM_TYPES_H
 
 /**********************************************************************************************************************
  * INCLUDES
  *********************************************************************************************************************/
-#include "Std_Types.h"
-//#include "IntCtrl_Cfg.h"
+
 
 /**********************************************************************************************************************
  *  GLOBAL CONSTANT MACROS
  *********************************************************************************************************************/
+#define WORD_LENGTH_BITS      32u
+#define WORD_LENGTH_BYTES     4u
+#define MSB_FIRST             0u    /* big endian bit ordering */
+#define LSB_FIRST        1u    /* little endian bit ordering */
 
-#define NVIC_PRI_BASE             ((volatile uint32 *)0xE000E400) //address of first NVIC priory setting register
-#define NVIC_EN_BASE							((volatile uint32 *)0xE000E100) //address of first NVIC enable register
-#define SYS_PRI1           				((volatile uint32 *)0xE000ED18) //address of first SCB priorty register
-#define SYS_PRI2         					((volatile uint32 *)0xE000ED1C)
-#define SYS_PRI3         					((volatile uint32 *)0xE000ED20)
+#define HIGH_BYTE_FIRST  0u    /* big endian byte ordering */
+#define LOW_BYTE_FIRST   1u    /* little endian byte ordering */
 
-// number of programmable system handlers 
-#define PROG_SYS_HANDLERS_NO    		7U
+#ifndef TRUE
+   #define TRUE   1u
+#endif
 
-// the vector table number of system handlers
-#define MEM_MAN_FAULT_NO						4U
-#define BUS_FAULT_NO								5U
-#define USAGE_FAULT_NO							6U
-#define SVC_NO								      11U
-#define DEBUG_MON_NO								12U
-#define PEND_SV_NO									14U
-#define SYSTICK_NO									15U
+#ifndef FALSE
+   #define FALSE  0u
+#endif
 
-// position of each system handler enable bit in NVIC_SYS_HND_CTRL_R register
-#define SYS_HND_CTRL_MEM_SHIFT   16U 
-#define SYS_HND_CTRL_BUS_SHIFT   17U  
-#define SYS_HND_CTRL_USAGE_SHIFT 18U  
-#define SYS_HND_CTRL_SVC_SHIFT   15U 
-#define SYS_HND_CTRL_MON_SHIFT   8U  
-#define SYS_HND_CTRL_PNDSV_SHIFT 10U  
-#define SYS_HND_CTRL_TICK_SHIFT  11U  
+#define ENABLE    1u
+#define DISABLE   0u
+
+#define CPU_BIT_ORDER    LSB_FIRST        /*little endian bit ordering*/
+#define CPU_BYTE_ORDER   LOW_BYTE_FIRST   /*little endian byte ordering*/
 
 /**********************************************************************************************************************
  *  GLOBAL FUNCTION MACROS
@@ -56,7 +49,22 @@
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
+typedef unsigned char         boolean;       /*        TRUE .. FALSE           */
 
+typedef signed char           sint8;         /*        -128 .. +127            */
+typedef unsigned char         uint8;         /*           0 .. 255             */
+typedef signed short          sint16;        /*      -32768 .. +32767          */
+typedef unsigned short        uint16;        /*           0 .. 65535           */
+typedef signed long           sint32;        /* -2147483648 .. +2147483647     */
+typedef unsigned long         uint32;        /*           0 .. 4294967295      */
+
+typedef float                 float32;
+typedef double                float64;
+
+#ifdef PLATFORM_SUPPORT_SINT64_UINT64 /*Valid only for gnu and C99 */
+typedef signed    long long  sint64;   /* -9223372036854775808 .. 9223372036854775807      */
+typedef unsigned  long long  uint64;   /*                    0 .. 18446744073709551615     */
+#endif
 
 /**********************************************************************************************************************
  *  GLOBAL DATA PROTOTYPES
@@ -66,22 +74,10 @@
 /**********************************************************************************************************************
  *  GLOBAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
+
  
-/******************************************************************************
-* \Syntax          : void IntCrtl_Init(void)                                      
-* \Description     : initialize Nvic\SCB Module by parsing the Configuration 
-*                    into Nvic\SCB registers                                    
-*                                                                             
-* \Sync\Async      : Synchronous                                               
-* \Reentrancy      : Non Reentrant                                             
-* \Parameters (in) : None                     
-* \Parameters (out): None                                                      
-* \Return value:   : None
-*******************************************************************************/
-void IntCrtl_Init(void);
- 
-#endif  /* IntCrtl_H */
+#endif  /* PLATFORM_TYPES_H */
 
 /**********************************************************************************************************************
- *  END OF FILE: IntCrtl.h
+ *  END OF FILE: Std_Types.h
  *********************************************************************************************************************/

@@ -2,32 +2,33 @@
 
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *         File:  IntCtrl_Cfg.h
+ *         File:  Compiler.h
  *       Module:  -
  *
- *  Description:  <Write File DESCRIPTION here>     
+ *  Description:  Contains Compiler Dependent MACRO Definition     
  *  
  *********************************************************************************************************************/
-#ifndef INTCTRL_CFG_H
-#define INTCTRL_CFG_H
+#ifndef COMPILER_H
+#define COMPILER_H
 
 /**********************************************************************************************************************
  * INCLUDES
  *********************************************************************************************************************/
- #include "Platform_Types.h"
- #include "IntCtrl.h"
+
+
 /**********************************************************************************************************************
  *  GLOBAL CONSTANT MACROS
  *********************************************************************************************************************/
-// number of used interrupts in this driver
-#define INTCTRL_NO_OF_INTERRUPTS					2
-// select priorty grouping split 
-// select from tm4c123gh6pm.h 
-// 3.5 split corresponds to xxx.yyyyy binary split
-// which corresponds to xxx in PRIGROUP bitfield in APINT (8 groups 1 sungroup) in our aplication
+/* NULL_PTR define with a void pointer to zero definition*/
+#define NULL_PTR       ((void *)0)
 
-#define PRIORTYSELECTED										NVIC_APINT_PRIGROUP_3_5 
+/* INLINE  define for abstraction of the keyword inline*/
+#define INLINE         inline
 
+/* LOCAL_INLINE define for abstraction of the keyword inline in functions with "static" scope.
+   Different compilers may require a different sequence of the keywords "static" and "inline" 
+   if this is supported at all. */
+#define LOCAL_INLINE   static inline
 
 /**********************************************************************************************************************
  *  GLOBAL FUNCTION MACROS
@@ -37,28 +38,20 @@
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
- typedef struct {
-	uint32 vectInterruptNo; 
-	uint32 enableDisable ;
-	uint32 priortySubpriorty;	 
- }INTERRUPT_INFO;
- 
-  typedef struct {
-	uint32 vectInterruptNo; 
-	uint32 enableDisable;
-	uint32 priortySubpriorty;
-	volatile uint32* priortyRegister;
-	uint32 priortyShift;
-	uint32 sysHndCtrlShift;
- }SYSHNDCTRL_INFO;
- 
-extern  INTERRUPT_INFO enabledInterrupts[INTCTRL_NO_OF_INTERRUPTS];
-extern  SYSHNDCTRL_INFO systemHandlers[PROG_SYS_HANDLERS_NO];
- 
 
- 
-#endif  /* INTCTRL_CFG_H */
 
 /**********************************************************************************************************************
- *  END OF FILE: IntCtrl_Cfg.h
+ *  GLOBAL DATA PROTOTYPES
+ *********************************************************************************************************************/
+
+ 
+/**********************************************************************************************************************
+ *  GLOBAL FUNCTION PROTOTYPES
+ *********************************************************************************************************************/
+
+ 
+#endif  /* COMPILER_H */
+
+/**********************************************************************************************************************
+ *  END OF FILE: Std_Types.h
  *********************************************************************************************************************/

@@ -1,8 +1,8 @@
 /**********************************************************************************************************************
  *  FILE DESCRIPTION
  *  -----------------------------------------------------------------------------------------------------------------*/
-/**        \file  IntCrtl.c
- *        \brief  Nested Vector Interrupt Controller Driver
+/**        \file  IGPIO_Dio
+ *        \brief  Dio Driver
  *
  *      \details  The Driver Configure All MCU interrupts Priority into gorups and subgroups
  *                Enable NVIC Interrupt Gate for Peripherals
@@ -13,11 +13,9 @@
  *  INCLUDES
  *********************************************************************************************************************/
 #include "Std_Types.h"
-#include "IntCtrl.h"
 #include "Mcu_Hw.h"
-#include "IntCtrl_Cfg.h"
-#include "TM4C123GH6PM.h"
-#include "IntCtrl_Types.h"
+#include "GPIO_Dio.h"
+#include "Gpio_Dio_Types.h"
 
 /**********************************************************************************************************************
 *  LOCAL MACROS CONSTANT\FUNCTION
@@ -26,6 +24,15 @@
 /**********************************************************************************************************************
  *  LOCAL DATA 
  *********************************************************************************************************************/
+static uint32 GPIO_Port_Base_Addr[]={
+	 GPIO_PORTA_BASE,
+	GPIO_PORTB_BASE,
+	GPIO_PORTC_BASE,
+	GPIO_PORTD_BASE,
+	GPIO_PORTE_BASE,
+	GPIO_PORTF_BASE
+
+};
 
 /**********************************************************************************************************************
  *  GLOBAL DATA
@@ -44,40 +51,63 @@
  *********************************************************************************************************************/
 
 
+
 /******************************************************************************
 * \Syntax          : void IntCrtl_Init(void)                                      
 * \Description     : initialize Nvic\SCB Module by parsing the Configuration 
 *                    into Nvic\SCB registers                                    
 *                                                                             
 * \Sync\Async      : Synchronous                                               
-* \Reentrancy      : Non Reentrant                                             
+* \Reentrancy      : Reentrant                                             
 * \Parameters (in) : None                     
 * \Parameters (out): None                                                      
 * \Return value:   : None
 *******************************************************************************/
-void IntCrtl_Init(void)
-{
+Dio_LevelType Dio_ReadChannel(Dio_PortType Port,Dio_ChannelType Channel){
 	
-	// vectkey is used to enable writing to APINT and PRIGROUP bit field  to G3.S1 split (first 4 bits unused)
-    APINT = (NVIC_APINT_VECTKEY|PRIORTYSELECTED);
-    
-    // Assign group\subgroup priority in SCB_SYSPRIx Registers and enables/disables system handlers in SCB_Sys Registers */  
+	volatile uint32* Curr_GPIO_Addr=(volatile uint32*)GPIO_Port_Base_Addr[Port];
+	uint32 channel_Offset=1U<<Channel;	
+	uint32 reading= *(Curr_GPIO_Addr+channel_Offset);
+	Dio_LevelType level= (Dio_LevelType)(reading >>Channel);
+	return level;
+}
+
+Dio_PortLevelType Dio_ReadPort(Dio_PortType Port){
 	
-	for(uint8 j=0;j<PROG_SYS_HANDLERS_NO;j++){
-		*(systemHandlers[j].priortyRegister)|= systemHandlers[j].priortySubpriorty <<systemHandlers[j].priortyShift;
-		NVIC_SYS_HND_CTRL_R|= systemHandlers[j].enableDisable <<systemHandlers[j].sysHndCtrlShift;
+	volatile uint32* Curr_GPIO_Addr=(volatile uint32*) GPIO_Port_Base_Addr[Port];
+	uint8 reading= (uint8)(*(Curr_GPIO_Addr+USE_ALL_PINS/4));
+	Dio_PortLevelType portLevel= reading;
+	return portLevel;
+}
+
+void Dio_WriteChannel(Dio_PortType Port,Dio_ChannelType Channel,Dio_LevelType ChannelLevel){
+
+	volatile uint32* Curr_GPIO_Addr=(volatile uint32*) GPIO_Port_Base_Addr[Port];
+	uint32 channel_Offset=1U<<Channel;	
+	*(Curr_GPIO_Addr+channel_Offset)= (uint32)ChannelLevel<<Channel;
+	return;
+
+}
+void Dio_WritePort(Dio_PortType Port,Dio_PortLevelType PortLevel){
+
+	volatile uint32* Curr_GPIO_Addr=(volatile uint32*) GPIO_Port_Base_Addr[Port];
+	*(Curr_GPIO_Addr+USE_ALL_PINS/4)= (uint32)PortLevel;
+	return;
+
+}
+void Dio_FlipChannel(Dio_PortType Port,Dio_ChannelType Channel){
+
+	if(Dio_ReadChannel(Port,Channel)==CHANNEL_HIGH){
+		Dio_WriteChannel(Port,Channel,CHANNEL_LOW);
 	}
-	//Assign group\subgroup priority inNVIC_PRIx and enables/disables interrupts in NVIC_ENx   */
-	for(uint8 i=0;i<INTCTRL_NO_OF_INTERRUPTS;i++){
-		uint32 interruptNum=enabledInterrupts[i].vectInterruptNo-16;
-		uint32 priortyRegisterCalc=interruptNum/4;
-		uint32 priortyField=interruptNum%4;
-		*(NVIC_PRI_BASE+priortyRegisterCalc) |=(uint32)(enabledInterrupts[i].priortySubpriorty<<((uint8) 5 + (uint8)(8*priortyField) ));
-		uint32 enableRegisterCalc = interruptNum/32;
-		uint8 enableField = interruptNum%32;	
-		*(NVIC_EN_BASE+enableRegisterCalc)|= (1U<<enableField);
-	}
-	}
+	else{
+		Dio_WriteChannel(Port,Channel,CHANNEL_HIGH);
+}
+return;
+}
+
+
+
 /**********************************************************************************************************************
- *  END OF FILE: IntCrtl.c
+ *  END OF FILE: GPIO_Dio.c
  *********************************************************************************************************************/

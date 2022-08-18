@@ -2,31 +2,28 @@
 
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *         File:  IntCtrl_Cfg.h
- *       Module:  -
+ *         File:  GPIO_Dio_Types.h
+ *       Module:  GPIO_Dio
  *
- *  Description:  <Write File DESCRIPTION here>     
+ *  Description:  <contains types needed by the GPIO_Dio driver>     
  *  
  *********************************************************************************************************************/
-#ifndef INTCTRL_CFG_H
-#define INTCTRL_CFG_H
+#ifndef GPIO_DIO_TYPES_H
+#define GPIO_DIO_TYPES_H
 
 /**********************************************************************************************************************
  * INCLUDES
  *********************************************************************************************************************/
- #include "Platform_Types.h"
- #include "IntCtrl.h"
+#include "Std_Types.h"
+
 /**********************************************************************************************************************
  *  GLOBAL CONSTANT MACROS
  *********************************************************************************************************************/
-// number of used interrupts in this driver
-#define INTCTRL_NO_OF_INTERRUPTS					2
-// select priorty grouping split 
-// select from tm4c123gh6pm.h 
-// 3.5 split corresponds to xxx.yyyyy binary split
-// which corresponds to xxx in PRIGROUP bitfield in APINT (8 groups 1 sungroup) in our aplication
 
-#define PRIORTYSELECTED										NVIC_APINT_PRIGROUP_3_5 
+	
+
+		
+
 
 
 /**********************************************************************************************************************
@@ -37,28 +34,35 @@
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
- typedef struct {
-	uint32 vectInterruptNo; 
-	uint32 enableDisable ;
-	uint32 priortySubpriorty;	 
- }INTERRUPT_INFO;
+		typedef enum{
+		CHANNEL0,
+		CHANNEL1,
+		CHANNEL2,
+		CHANNEL3,
+		CHANNEL4,
+		CHANNEL5,
+		CHANNEL6,
+		CHANNEL7
+		}Dio_ChannelType;
+	
+	typedef enum{
+		PORT_A,
+		PORT_B,
+		PORT_C,
+		PORT_D,
+		PORT_E,
+		PORT_F
+		}Dio_PortType;
+		typedef enum{
+		 CHANNEL_LOW,
+		 CHANNEL_HIGH
+		}Dio_LevelType;
+		
+	typedef  uint8 Dio_PortLevelType;
+		
  
-  typedef struct {
-	uint32 vectInterruptNo; 
-	uint32 enableDisable;
-	uint32 priortySubpriorty;
-	volatile uint32* priortyRegister;
-	uint32 priortyShift;
-	uint32 sysHndCtrlShift;
- }SYSHNDCTRL_INFO;
- 
-extern  INTERRUPT_INFO enabledInterrupts[INTCTRL_NO_OF_INTERRUPTS];
-extern  SYSHNDCTRL_INFO systemHandlers[PROG_SYS_HANDLERS_NO];
- 
-
- 
-#endif  /* INTCTRL_CFG_H */
+#endif  /* GPIO_DIO_TYPES */
 
 /**********************************************************************************************************************
- *  END OF FILE: IntCtrl_Cfg.h
+ *  END OF FILE: GPIO_Dio_Types.h
  *********************************************************************************************************************/

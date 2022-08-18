@@ -2,31 +2,25 @@
 
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *         File:  IntCtrl_Cfg.h
- *       Module:  -
+ *         File:  GPT_Types.h
+ *       Module:  GPT_Types
  *
- *  Description:  <Write File DESCRIPTION here>     
+ *  Description:  <>     
  *  
  *********************************************************************************************************************/
-#ifndef INTCTRL_CFG_H
-#define INTCTRL_CFG_H
+#ifndef GPT_TYPES_H
+#define GPT_TYPES_H
 
 /**********************************************************************************************************************
  * INCLUDES
  *********************************************************************************************************************/
- #include "Platform_Types.h"
- #include "IntCtrl.h"
+#include "Std_Types.h"
+
 /**********************************************************************************************************************
  *  GLOBAL CONSTANT MACROS
  *********************************************************************************************************************/
-// number of used interrupts in this driver
-#define INTCTRL_NO_OF_INTERRUPTS					2
-// select priorty grouping split 
-// select from tm4c123gh6pm.h 
-// 3.5 split corresponds to xxx.yyyyy binary split
-// which corresponds to xxx in PRIGROUP bitfield in APINT (8 groups 1 sungroup) in our aplication
+#define PMC_SIZE						4u // size of PMC field in GPIOCTL register
 
-#define PRIORTYSELECTED										NVIC_APINT_PRIGROUP_3_5 
 
 
 /**********************************************************************************************************************
@@ -37,28 +31,49 @@
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
- typedef struct {
-	uint32 vectInterruptNo; 
-	uint32 enableDisable ;
-	uint32 priortySubpriorty;	 
- }INTERRUPT_INFO;
- 
-  typedef struct {
-	uint32 vectInterruptNo; 
-	uint32 enableDisable;
-	uint32 priortySubpriorty;
-	volatile uint32* priortyRegister;
-	uint32 priortyShift;
-	uint32 sysHndCtrlShift;
- }SYSHNDCTRL_INFO;
- 
-extern  INTERRUPT_INFO enabledInterrupts[INTCTRL_NO_OF_INTERRUPTS];
-extern  SYSHNDCTRL_INFO systemHandlers[PROG_SYS_HANDLERS_NO];
- 
+	typedef enum{
+		TIMER0,
+		TIMER1,
+		TIMER2,
+		TIMER3,
+		TIMER4,
+		TIMER5,
+		WIDE_TIMER0,
+		WIDE_TIMER1,
+		WIDE_TIMER2,
+		WIDE_TIMER3,
+		WIDE_TIMER4,
+		WIDE_TIMER5
+		}GPT_ChannelType;
+	
+		typedef uint32 GPT_ValueType;
+		
+	
+	typedef enum{
+		GPT_CH_MODE_ONESHOT=1,
+		GPT_CH_MODE_CONTINUOUS
+		}GPT_ModeType;
+	
+	typedef enum{
+	GPT_PREDEF_TIMER_1US_16BIT,
+		GPT_PREDEF_TIMER_1US_24BIT,
+		GPT_PREDEF_TIMER_1US_32BIT,
+		GPT_PREDEF_TIMER_100US_32BIT
+}GPT_PredefTimerType; 
 
+
+typedef void(*GPTNotification)(void);
+
+typedef struct {
+GPT_ChannelType channelID;
+	GPT_ModeType channelMode;
+	GPT_ValueType channelTickFreq;
+	GPT_ValueType channelTickValMax;
+	GPTNotification channelNotification;
+}Port_ConfigType;
  
-#endif  /* INTCTRL_CFG_H */
+#endif  /* GPT_TYPES_H */
 
 /**********************************************************************************************************************
- *  END OF FILE: IntCtrl_Cfg.h
+ *  END OF FILE: GPT_Types.h
  *********************************************************************************************************************/

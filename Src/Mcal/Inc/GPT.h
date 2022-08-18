@@ -1,47 +1,62 @@
 /**********************************************************************************************************************
+
  *  FILE DESCRIPTION
- *  -----------------------------------------------------------------------------------------------------------------*/
-/**        \file  IntCrtl.c
- *        \brief  Nested Vector Interrupt Controller Driver
+ *  -------------------------------------------------------------------------------------------------------------------
+ *         File:  GPIO_Port.h.h
+ *       Module:  GPIO_Port.h
  *
- *      \details  The Driver Configure All MCU interrupts Priority into gorups and subgroups
- *                Enable NVIC Interrupt Gate for Peripherals
- *
+ *  Description:  header file for GPIO_Port Module    
+ *  
  *********************************************************************************************************************/
+#ifndef GPT_H
+#define GPT_H
 
 /**********************************************************************************************************************
- *  INCLUDES
+ * INCLUDES
  *********************************************************************************************************************/
 #include "Std_Types.h"
-#include "IntCtrl.h"
-#include "Mcu_Hw.h"
-#include "IntCtrl_Cfg.h"
-#include "TM4C123GH6PM.h"
-#include "IntCtrl_Types.h"
+#include "GPT_Types.h"
+
+
 
 /**********************************************************************************************************************
-*  LOCAL MACROS CONSTANT\FUNCTION
-*********************************************************************************************************************/	
+ *  GLOBAL CONSTANT MACROS
+ *********************************************************************************************************************/
+	#define TACDIR				4U
+	#define TAEN					1U
+	
 
 /**********************************************************************************************************************
- *  LOCAL DATA 
+ *  GLOBAL FUNCTION MACROS
  *********************************************************************************************************************/
 
-/**********************************************************************************************************************
- *  GLOBAL DATA
- *********************************************************************************************************************/
 
 /**********************************************************************************************************************
- *  LOCAL FUNCTION PROTOTYPES
+ *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
 
-/**********************************************************************************************************************
- *  LOCAL FUNCTIONS
- *********************************************************************************************************************/
 
 /**********************************************************************************************************************
- *  GLOBAL FUNCTIONS
+ *  GLOBAL DATA PROTOTYPES
  *********************************************************************************************************************/
+
+ 
+/**********************************************************************************************************************
+ *  GLOBAL FUNCTION PROTOTYPES
+ *********************************************************************************************************************/
+ void GPT_Init(void);
+ 
+ void GPT_DisableNotification( GPT_ChannelType Channel );
+	 
+ void GPT_EnableNotification( GPT_ChannelType Channel );
+ 
+void GPT_StartTimer( GPT_ChannelType Channel, GPT_ValueType Value ) ;
+
+void GPT_StopTimer( GPT_ChannelType Channel );
+
+GPT_ValueType GPT_GetTimeElapsed( GPT_ChannelType Channel );
+
+GPT_ValueType GPT_GetTimeRemainig( GPT_ChannelType Channel );
 
 
 /******************************************************************************
@@ -55,29 +70,10 @@
 * \Parameters (out): None                                                      
 * \Return value:   : None
 *******************************************************************************/
-void IntCrtl_Init(void)
-{
-	
-	// vectkey is used to enable writing to APINT and PRIGROUP bit field  to G3.S1 split (first 4 bits unused)
-    APINT = (NVIC_APINT_VECTKEY|PRIORTYSELECTED);
-    
-    // Assign group\subgroup priority in SCB_SYSPRIx Registers and enables/disables system handlers in SCB_Sys Registers */  
-	
-	for(uint8 j=0;j<PROG_SYS_HANDLERS_NO;j++){
-		*(systemHandlers[j].priortyRegister)|= systemHandlers[j].priortySubpriorty <<systemHandlers[j].priortyShift;
-		NVIC_SYS_HND_CTRL_R|= systemHandlers[j].enableDisable <<systemHandlers[j].sysHndCtrlShift;
-	}
-	//Assign group\subgroup priority inNVIC_PRIx and enables/disables interrupts in NVIC_ENx   */
-	for(uint8 i=0;i<INTCTRL_NO_OF_INTERRUPTS;i++){
-		uint32 interruptNum=enabledInterrupts[i].vectInterruptNo-16;
-		uint32 priortyRegisterCalc=interruptNum/4;
-		uint32 priortyField=interruptNum%4;
-		*(NVIC_PRI_BASE+priortyRegisterCalc) |=(uint32)(enabledInterrupts[i].priortySubpriorty<<((uint8) 5 + (uint8)(8*priortyField) ));
-		uint32 enableRegisterCalc = interruptNum/32;
-		uint8 enableField = interruptNum%32;	
-		*(NVIC_EN_BASE+enableRegisterCalc)|= (1U<<enableField);
-	}
-	}
+
+ 
+#endif  /* GPIO_PORT_H */
+
 /**********************************************************************************************************************
- *  END OF FILE: IntCrtl.c
+ *  END OF FILE: GPIO_Port.h
  *********************************************************************************************************************/

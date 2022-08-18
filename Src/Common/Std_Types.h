@@ -1,64 +1,58 @@
 /**********************************************************************************************************************
-
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *         File:  IntCtrl_Cfg.h
+ *         File:  Std_Types.h
+ *    Component:  -
  *       Module:  -
  *
- *  Description:  <Write File DESCRIPTION here>     
- *  
+ *  Description:  Provision of Standard Types
+ *
  *********************************************************************************************************************/
-#ifndef INTCTRL_CFG_H
-#define INTCTRL_CFG_H
+
+
+
+#ifndef STD_TYPES_H
+#define STD_TYPES_H
 
 /**********************************************************************************************************************
  * INCLUDES
  *********************************************************************************************************************/
- #include "Platform_Types.h"
- #include "IntCtrl.h"
+
+# include "Platform_Types.h"
+# include "Compiler.h"
+
 /**********************************************************************************************************************
  *  GLOBAL CONSTANT MACROS
  *********************************************************************************************************************/
-// number of used interrupts in this driver
-#define INTCTRL_NO_OF_INTERRUPTS					2
-// select priorty grouping split 
-// select from tm4c123gh6pm.h 
-// 3.5 split corresponds to xxx.yyyyy binary split
-// which corresponds to xxx in PRIGROUP bitfield in APINT (8 groups 1 sungroup) in our aplication
 
-#define PRIORTYSELECTED										NVIC_APINT_PRIGROUP_3_5 
+# define STD_HIGH     1u /* Physical state 5V or 3.3V */
+# define STD_LOW      0u /* Physical state 0V */
 
+# define STD_ACTIVE   1u /* Logical state active */
+# define STD_IDLE     0u /* Logical state idle */
 
-/**********************************************************************************************************************
- *  GLOBAL FUNCTION MACROS
- *********************************************************************************************************************/
-
+# define STD_ON       1u
+# define STD_OFF      0u
 
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
- typedef struct {
-	uint32 vectInterruptNo; 
-	uint32 enableDisable ;
-	uint32 priortySubpriorty;	 
- }INTERRUPT_INFO;
- 
-  typedef struct {
-	uint32 vectInterruptNo; 
-	uint32 enableDisable;
-	uint32 priortySubpriorty;
-	volatile uint32* priortyRegister;
-	uint32 priortyShift;
-	uint32 sysHndCtrlShift;
- }SYSHNDCTRL_INFO;
- 
-extern  INTERRUPT_INFO enabledInterrupts[INTCTRL_NO_OF_INTERRUPTS];
-extern  SYSHNDCTRL_INFO systemHandlers[PROG_SYS_HANDLERS_NO];
- 
 
- 
-#endif  /* INTCTRL_CFG_H */
+typedef uint8 Std_ReturnType;
+#define E_OK          0u
+#define E_NOT_OK      1u
 
 /**********************************************************************************************************************
- *  END OF FILE: IntCtrl_Cfg.h
+ *  GLOBAL DATA PROTOTYPES
+ *********************************************************************************************************************/
+
+ 
+/**********************************************************************************************************************
+ *  GLOBAL FUNCTION PROTOTYPES
+ *********************************************************************************************************************/
+
+
+#endif /* STD_TYPES_H */
+/**********************************************************************************************************************
+ *  END OF FILE: Std_Types.h
  *********************************************************************************************************************/

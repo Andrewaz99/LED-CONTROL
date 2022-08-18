@@ -2,31 +2,25 @@
 
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *         File:  IntCtrl_Cfg.h
- *       Module:  -
+ *         File:  IntCtrl_Types.h
+ *       Module:  IntCtrl
  *
- *  Description:  <Write File DESCRIPTION here>     
+ *  Description:  <>     
  *  
  *********************************************************************************************************************/
-#ifndef INTCTRL_CFG_H
-#define INTCTRL_CFG_H
+#ifndef INTCTRL_TYPES_H
+#define INTCTRL_TYPES_H
 
 /**********************************************************************************************************************
  * INCLUDES
  *********************************************************************************************************************/
- #include "Platform_Types.h"
- #include "IntCtrl.h"
+#include "Std_Types.h"
+
 /**********************************************************************************************************************
  *  GLOBAL CONSTANT MACROS
  *********************************************************************************************************************/
-// number of used interrupts in this driver
-#define INTCTRL_NO_OF_INTERRUPTS					2
-// select priorty grouping split 
-// select from tm4c123gh6pm.h 
-// 3.5 split corresponds to xxx.yyyyy binary split
-// which corresponds to xxx in PRIGROUP bitfield in APINT (8 groups 1 sungroup) in our aplication
 
-#define PRIORTYSELECTED										NVIC_APINT_PRIGROUP_3_5 
+
 
 
 /**********************************************************************************************************************
@@ -37,28 +31,10 @@
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
- typedef struct {
-	uint32 vectInterruptNo; 
-	uint32 enableDisable ;
-	uint32 priortySubpriorty;	 
- }INTERRUPT_INFO;
- 
-  typedef struct {
-	uint32 vectInterruptNo; 
-	uint32 enableDisable;
-	uint32 priortySubpriorty;
-	volatile uint32* priortyRegister;
-	uint32 priortyShift;
-	uint32 sysHndCtrlShift;
- }SYSHNDCTRL_INFO;
- 
-extern  INTERRUPT_INFO enabledInterrupts[INTCTRL_NO_OF_INTERRUPTS];
-extern  SYSHNDCTRL_INFO systemHandlers[PROG_SYS_HANDLERS_NO];
- 
 
  
-#endif  /* INTCTRL_CFG_H */
+#endif  /* INTCTRL_TYPES_H */
 
 /**********************************************************************************************************************
- *  END OF FILE: IntCtrl_Cfg.h
+ *  END OF FILE: IntCtrl_Types.h
  *********************************************************************************************************************/
