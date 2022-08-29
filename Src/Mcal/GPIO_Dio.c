@@ -53,48 +53,94 @@ static uint32 GPIO_Port_Base_Addr[]={
 
 
 /******************************************************************************
-* \Syntax          : void IntCrtl_Init(void)                                      
-* \Description     : initialize Nvic\SCB Module by parsing the Configuration 
-*                    into Nvic\SCB registers                                    
+* \Syntax          : Dio_LevelType Dio_ReadChannel(Dio_PortType Port,Dio_ChannelType Channel)                                      
+* \Description     : read a GPIO pin to know whether it's on or off
+*                                       
 *                                                                             
 * \Sync\Async      : Synchronous                                               
 * \Reentrancy      : Reentrant                                             
-* \Parameters (in) : None                     
-* \Parameters (out): None                                                      
-* \Return value:   : None
+* \Parameters (in) : Dio_PortType ,Dio_ChannelType                       
+* \Parameters (out): Dio_LevelType                                                       
+* \Return value:   : CHANNEL_HIGH
+										 CHANNEL_LOW
 *******************************************************************************/
 Dio_LevelType Dio_ReadChannel(Dio_PortType Port,Dio_ChannelType Channel){
 	
-	volatile uint32* Curr_GPIO_Addr=(volatile uint32*)GPIO_Port_Base_Addr[Port];
+	uint32 Curr_GPIO_Addr=GPIO_Port_Base_Addr[Port];
+	
 	uint32 channel_Offset=1U<<Channel;	
-	uint32 reading= *(Curr_GPIO_Addr+channel_Offset);
+	
+	uint32 reading= ACCESS_REG(Curr_GPIO_Addr,channel_Offset*WORD_LENGTH_BYTES);
+	
 	Dio_LevelType level= (Dio_LevelType)(reading >>Channel);
+	
 	return level;
 }
-
+/******************************************************************************
+* \Syntax          : Dio_PortLevelType Dio_ReadPort(Dio_PortType Port)                                      
+* \Description     : read a GPIO port's value 
+*                                                      
+*                                                                             
+* \Sync\Async      : Synchronous                                               
+* \Reentrancy      : Reentrant                                             
+* \Parameters (in) : Dio_PortType                     
+* \Parameters (out): Dio_PortLevelType                                                      
+* \Return value:   : Dio_PortLevelType
+*******************************************************************************/
 Dio_PortLevelType Dio_ReadPort(Dio_PortType Port){
 	
-	volatile uint32* Curr_GPIO_Addr=(volatile uint32*) GPIO_Port_Base_Addr[Port];
-	uint8 reading= (uint8)(*(Curr_GPIO_Addr+USE_ALL_PINS/4));
-	Dio_PortLevelType portLevel= reading;
+	uint32 Curr_GPIO_Addr=GPIO_Port_Base_Addr[Port];
+	Dio_PortLevelType portLevel= (Dio_PortLevelType)ACCESS_REG(Curr_GPIO_Addr,GPIODATA);
 	return portLevel;
 }
-
+/******************************************************************************
+* \Syntax          : void Dio_WriteChannel(Dio_PortType Port,Dio_ChannelType Channel,Dio_LevelType ChannelLevel)                                     
+* \Description     : write a HIGH or LOW  to a specific pin
+*                                                      
+*                                                                             
+* \Sync\Async      : Synchronous                                               
+* \Reentrancy      : Reentrant                                             
+* \Parameters (in) : Dio_PortType ,Dio_ChannelType, Dio_LevelType                    
+* \Parameters (out): None                                                      
+* \Return value:   : None
+*******************************************************************************/
 void Dio_WriteChannel(Dio_PortType Port,Dio_ChannelType Channel,Dio_LevelType ChannelLevel){
 
-	volatile uint32* Curr_GPIO_Addr=(volatile uint32*) GPIO_Port_Base_Addr[Port];
+	uint32 Curr_GPIO_Addr=GPIO_Port_Base_Addr[Port];
 	uint32 channel_Offset=1U<<Channel;	
-	*(Curr_GPIO_Addr+channel_Offset)= (uint32)ChannelLevel<<Channel;
+	 ACCESS_REG(Curr_GPIO_Addr,channel_Offset*WORD_LENGTH_BYTES)= (uint32)ChannelLevel<<Channel;
 	return;
 
 }
+/******************************************************************************
+* \Syntax          : void Dio_WritePort(Dio_PortType Port,Dio_PortLevelType PortLevel)                                      
+* \Description     : write a value to the port (set or clear all pins at once) 
+*                                                       
+*                                                                             
+* \Sync\Async      : Synchronous                                               
+* \Reentrancy      : Reentrant                                             
+* \Parameters (in) : Dio_PortType , Dio_PortLevelType                     
+* \Parameters (out): None                                                      
+* \Return value:   : None
+*******************************************************************************/
 void Dio_WritePort(Dio_PortType Port,Dio_PortLevelType PortLevel){
 
-	volatile uint32* Curr_GPIO_Addr=(volatile uint32*) GPIO_Port_Base_Addr[Port];
-	*(Curr_GPIO_Addr+USE_ALL_PINS/4)= (uint32)PortLevel;
+	uint32 Curr_GPIO_Addr=GPIO_Port_Base_Addr[Port];
+	ACCESS_REG(Curr_GPIO_Addr,GPIODATA)= (uint32)PortLevel;
 	return;
 
 }
+/******************************************************************************
+* \Syntax          : void Dio_FlipChannel(Dio_PortType Port,Dio_ChannelType Channel)                                      
+* \Description     : flip the value of the given pin 
+*                                                      
+*                                                                             
+* \Sync\Async      : Synchronous                                               
+* \Reentrancy      : Reentrant                                             
+* \Parameters (in) : Dio_PortType, Dio_ChannelType                    
+* \Parameters (out): None                                                      
+* \Return value:   : None
+*******************************************************************************/
 void Dio_FlipChannel(Dio_PortType Port,Dio_ChannelType Channel){
 
 	if(Dio_ReadChannel(Port,Channel)==CHANNEL_HIGH){

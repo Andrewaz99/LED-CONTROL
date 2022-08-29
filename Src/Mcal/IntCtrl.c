@@ -46,8 +46,8 @@
 
 /******************************************************************************
 * \Syntax          : void IntCrtl_Init(void)                                      
-* \Description     : initialize Nvic\SCB Module by parsing the Configuration 
-*                    into Nvic\SCB registers                                    
+* \Description     : initialize NVIC Module by passing the Configuration 
+*                    into NVIC registers                                    
 *                                                                             
 * \Sync\Async      : Synchronous                                               
 * \Reentrancy      : Non Reentrant                                             
@@ -58,24 +58,27 @@
 void IntCrtl_Init(void)
 {
 	
-	// vectkey is used to enable writing to APINT and PRIGROUP bit field  to G3.S1 split (first 4 bits unused)
-    APINT = (NVIC_APINT_VECTKEY|PRIORTYSELECTED);
+	// vectkey is used to enable writing to APINT and PRIGROUP bit field  to set the priorty split
+
+	ACCESS_REG(CORTEXM4_PERI_BASE_ADDRESS,NVIC_APINT) = (NVIC_APINT_VECTKEY|PRIORTYSELECTED);
     
-    // Assign group\subgroup priority in SCB_SYSPRIx Registers and enables/disables system handlers in SCB_Sys Registers */  
-	
-	for(uint8 j=0;j<PROG_SYS_HANDLERS_NO;j++){
-		*(systemHandlers[j].priortyRegister)|= systemHandlers[j].priortySubpriorty <<systemHandlers[j].priortyShift;
-		NVIC_SYS_HND_CTRL_R|= systemHandlers[j].enableDisable <<systemHandlers[j].sysHndCtrlShift;
-	}
 	//Assign group\subgroup priority inNVIC_PRIx and enables/disables interrupts in NVIC_ENx   */
 	for(uint8 i=0;i<INTCTRL_NO_OF_INTERRUPTS;i++){
+		// calculate IRQ number
 		uint32 interruptNum=enabledInterrupts[i].vectInterruptNo-16;
-		uint32 priortyRegisterCalc=interruptNum/4;
-		uint32 priortyField=interruptNum%4;
-		*(NVIC_PRI_BASE+priortyRegisterCalc) |=(uint32)(enabledInterrupts[i].priortySubpriorty<<((uint8) 5 + (uint8)(8*priortyField) ));
-		uint32 enableRegisterCalc = interruptNum/32;
-		uint8 enableField = interruptNum%32;	
-		*(NVIC_EN_BASE+enableRegisterCalc)|= (1U<<enableField);
+		// calculate which priorty register in NVIC
+		uint32 priortyRegisterCalc=interruptNum/INTERRUPTS_PER_PROIRTY_REG;
+		
+		uint32 priortyField=interruptNum%INTERRUPTS_PER_PROIRTY_REG;
+		
+		ACCESS_REG(NVIC_PRI_BASE,priortyRegisterCalc*WORD_LENGTH_BYTES)|=(uint32)(enabledInterrupts[i].priortySubpriorty<<(( 5U + (8U*priortyField) )));
+		
+		// calculate which enable register in NVIC
+		uint32 enableRegisterCalc = interruptNum/INTERRUPTS_PER_ENABLE_REG;
+		
+		uint8 enableField = interruptNum%INTERRUPTS_PER_ENABLE_REG;	
+		
+		ACCESS_REG(NVIC_EN_BASE,enableRegisterCalc*WORD_LENGTH_BYTES)|= (1U<<enableField);
 	}
 	}
 /**********************************************************************************************************************

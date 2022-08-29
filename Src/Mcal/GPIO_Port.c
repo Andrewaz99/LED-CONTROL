@@ -17,7 +17,7 @@
 #include "GPIO_Port.h"
 #include "GPIO_Port_Types.h"
 #include "GPIO_Port_Cfg.h"
-#include "TM4C123GH6PM.h"
+
 
 /**********************************************************************************************************************
 *  LOCAL MACROS CONSTANT\FUNCTION
@@ -94,10 +94,10 @@ for(int i=0; i<GPIO_PORT_NO_OF_PINS_USED;i++){
 	
 	//set pin out current
 	
-	/*if (InitializedPins[i].pinOutCurrent==OUT_2mA){
+	if (InitializedPins[i].pinOutCurrent==OUT_2mA){
 	ACCESS_REG(currPortBase,GPIODR2R)|=pinVal;
 	}
-	else*/
+	else
 		if(InitializedPins[i].pinOutCurrent==OUT_4mA){
 		ACCESS_REG(currPortBase,GPIODR4R)|=pinVal;
 	}

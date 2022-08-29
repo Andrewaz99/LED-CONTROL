@@ -16,6 +16,8 @@
 #include "GPIO_Port_Cfg.h"
 #include "GPIO_Port.h"
 #include "Mcu_Hw.h"
+#include "GPIO_Port_Types.h"
+
 /**********************************************************************************************************************
 *  LOCAL MACROS CONSTANT\FUNCTION
 *********************************************************************************************************************/
@@ -28,10 +30,12 @@
  *  GLOBAL DATA
  *********************************************************************************************************************/
 Port_ConfigType InitializedPins[GPIO_PORT_NO_OF_PINS_USED	]=
-{{PORTF,PIN0,INPUT,PDR,PORT_PIN_MODE_DIO,OUT_2mA,DIGITAL},
-{PORTF,PIN1,OUTPUT,PDR,PORT_PIN_MODE_DIO,OUT_2mA,DIGITAL},
-{PORTF,PIN2,OUTPUT,PDR,PORT_PIN_MODE_DIO,OUT_2mA,DIGITAL},
-{PORTF,PIN3,OUTPUT,PDR,PORT_PIN_MODE_DIO,OUT_2mA,DIGITAL}
+// {port	,pin	 	,direction,internal,pin mode							,out current,analog/digital	}
+//													 attach.
+{{PORTF		,PIN0		,INPUT		,PDR		,PORT_PIN_MODE_DIO		,OUT_2mA		,DIGITAL},
+{PORTF		,PIN1		,OUTPUT		,PDR		,PORT_PIN_MODE_DIO		,OUT_2mA		,DIGITAL},
+{PORTF		,PIN2		,OUTPUT		,PDR		,PORT_PIN_MODE_DIO		,OUT_2mA		,DIGITAL},
+{PORTF		,PIN3		,OUTPUT		,PDR		,PORT_PIN_MODE_DIO		,OUT_2mA		,DIGITAL}
 
 };
 /**********************************************************************************************************************

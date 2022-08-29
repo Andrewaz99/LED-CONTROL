@@ -22,21 +22,23 @@
 *  LOCAL MACROS CONSTANT\FUNCTION
 *********************************************************************************************************************/
 	
+	
 /**********************************************************************************************************************
  *  LOCAL DATA 
  *********************************************************************************************************************/
 
+
 /**********************************************************************************************************************
  *  GLOBAL DATA
  *********************************************************************************************************************/
-const Port_ConfigType	InitalizedTimers[NO_OF_GPT_ACTIVATED]={
-	{TIMER0,GPT_CH_MODE_ONESHOT,1000000U,0xFFF,NULL_PTR},
-	{WIDE_TIMER0,GPT_CH_MODE_CONTINUOUS,1000000U,0xFFFFFF,GPT_WideTimer0Notification}
-};
 
-void GPT_WideTimer0Notification(void){
-	
-}
+	const GPT_ConfigType	InitalizedTimers[NO_OF_GPT_ACTIVATED]={
+	//{timer			, 				Mode			 	 	 ,Timer Frequency	  ,TimerMaxValue	}
+	{TIMER0			  ,GPT_CH_MODE_ONESHOT	 	 ,TIMER0_FREQ			  ,0xFFF					},
+	{WIDE_TIMER0  ,GPT_CH_MODE_CONTINUOUS  ,WIDE_TIMER0_FREQ  ,0xFFFFFF				}
+
+	};
+
 
 /**********************************************************************************************************************
  *  END OF FILE: IntCtrl_Lcfg.c

@@ -22,8 +22,19 @@
 /**********************************************************************************************************************
  *  GLOBAL CONSTANT MACROS
  *********************************************************************************************************************/
-	#define TACDIR				4U
-	#define TAEN					1U
+	#define NUM_OF_TIMER_NOTIFICATION			12
+	#define NUM_OF_TIMER_MODULES					12
+	
+	//Register specific bitfield shift
+	
+	#define GPTMTAMR_TACDIR							4U
+	#define GPTMCTL_TAEN								0U
+	#define GPTMIMR_TAMIM								4U
+	#define GPTMIMR_TATOIM							0U
+	#define GPTMMIS_TATOMIS							0U
+	#define GPTMMIS_TAMIMIS							4U
+	#define GPTMTAMR_TAMIE							5U
+	
 	
 
 /**********************************************************************************************************************
@@ -50,14 +61,19 @@
 	 
  void GPT_EnableNotification( GPT_ChannelType Channel );
  
+ void GPT_EnableNotificationWithMatch( GPT_ChannelType Channel );
+ 
 void GPT_StartTimer( GPT_ChannelType Channel, GPT_ValueType Value ) ;
+
+void GPT_StartTimerWithMatch( GPT_ChannelType Channel, GPT_ValueType Value,GPT_ValueType MatchValue );
 
 void GPT_StopTimer( GPT_ChannelType Channel );
 
 GPT_ValueType GPT_GetTimeElapsed( GPT_ChannelType Channel );
 
-GPT_ValueType GPT_GetTimeRemainig( GPT_ChannelType Channel );
+GPT_ValueType GPT_GetTimeRemaining( GPT_ChannelType Channel );
 
+void GPT_Notification_Register (GPT_NotificationType FuncPointer,GPT_ChannelType Timer);
 
 /******************************************************************************
 * \Syntax          : void IntCrtl_Init(void)                                      

@@ -19,24 +19,21 @@
  #include "GPT_Types.h"
 /**********************************************************************************************************************
  *  GLOBAL CONSTANT MACROS
- *********************************************************************************************************************/
-	#define GPT_PREDEF_TIMER_1US_16BIT_STATUS 					DISABLE
-	#define GPT_PREDEF_TIMER_1US_24BIT_STATUS						DISABLE
-	#define GPT_PREDEF_TIMER_1US_32BIT_STATUS						DISABLE
-	#define GPT_PREDEF_TIMER_100US_32BIT_STATUS					DISABLE
-	
+ *********************************************************************************************************************/	
+  
 	#define NO_OF_GPT_ACTIVATED 												2U
+	#define TIMER0_FREQ																	1000000U
+	#define WIDE_TIMER0_FREQ														1000000U
+
 /**********************************************************************************************************************
  *  GLOBAL FUNCTION MACROS
  *********************************************************************************************************************/
-
+void GPT_WTIMER0A_Notification(void);
 
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
 *********************************************************************************************************************/
-extern const Port_ConfigType	InitalizedTimers[NO_OF_GPT_ACTIVATED];
-void GPT_WideTimer0Notification(void);
- 
+extern  const GPT_ConfigType	InitalizedTimers[NO_OF_GPT_ACTIVATED];
 #endif  /* GPT_CFG_H */
 
 /**********************************************************************************************************************
